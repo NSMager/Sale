@@ -1,0 +1,83 @@
+<!DOCTYPE >
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+   <span>用户姓名查询:</span><input type="text"/> <button id="button1">查询</button>
+   <table border="1">
+       <tr>
+           <td>用户编号</td>
+           <td>姓名</td>
+           <td>性别</td>
+           <td>出生日期</td>
+           <td>电话</td>
+           <td>家庭住址</td>
+           <td>操作</td>
+       </tr>
+   </table>
+
+   <script type="text/javascript" th:src="@{https://code.jquery.com/jquery-3.1.1.min.js}"></script>
+   <script>
+       function showUser(){
+           $.ajax({
+               url:"/showUser",
+               datatype:"text",
+               data:{userName:$(":input[type=text]").val().trim()},
+               type:"post",
+               success:function(result){
+                   alert(result);
+                   $(".userTr").remove();
+                   var userList=JSON.parse(result);
+                   $.each(userList,function(i,ele){
+                       $("table").append(
+                           "<tr class='userTr'><td>"+userList[i].id+"</td><td>"+userList[i].userName+"</td><td class='gender'>"+userList[i].gender+"</td><td>"+userList[i].birthday+"</td><td>"+userList[i].phone+"</td><td>"+userList[i].address+"</td><td><a href='#' onclick='deleteUser(this)' >删除</a></td></tr>"
+                       )
+                   })
+                   $.each($(".gender"),function(i,ele){
+                       if($(ele).text()=="1"){
+                           $(ele).text("男");
+                       }else{
+                           $(ele).text("女");
+                       }
+                   })
+               }
+
+           })
+       }
+
+
+       $(function(){
+          $(showUser());
+          $("#button1").click(function(){
+              $(showUser());
+          })
+
+       })
+
+
+       function deleteUser(ele){
+           var o=$(ele).parent().parent().find("td").eq(0);
+           $.ajax({
+               url:"deleteUser",
+               data:{id:o.text()},
+               type:"post",
+               datatype:"text",
+               success:function(result){
+                   if(result>0){
+                       alert("删除成功！");
+                       o.parent().remove();
+                   }else{
+                       alert("删除失败！");
+                   }
+               }
+
+
+           })
+
+       }
+
+   </script>
+</body>
+</html>

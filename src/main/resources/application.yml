@@ -1,0 +1,20 @@
+server:
+  port: 8763
+  server:
+    context-path: /sale
+
+spring:
+  application:
+    name: Sale
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    cache: false
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+feign:
+  hystrix:
+    enabled: true
